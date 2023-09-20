@@ -1,14 +1,29 @@
-import { Text } from "@chakra-ui/react";
+import { HStack, Image, List, ListItem, Spinner, Text } from "@chakra-ui/react";
 import useGenres from "../hooks/useGenres";
+import getCroppedImageUrl from "../services/image-url";
 
 const GenresList = () => {
-  const { data: genres } = useGenres();
+  const { data: genres, isLoading, error } = useGenres();
+
+  if (error) return null;
+  if (isLoading) return <Spinner />;
+
   return (
-    <ul>
+    <List>
       {genres.map((genre) => (
-        <Text>{genre.name}</Text>
+        <ListItem key={genre.id} paddingY="5px">
+          <HStack>
+            <Image
+              boxSize="32px"
+              borderRadius={8}
+              src={getCroppedImageUrl(genre.image_background)} // we cannot give random dimensions for cropping
+              // images coz not all are supported
+            />
+            <Text fontSize="lg">{genre.name}</Text>
+          </HStack>
+        </ListItem>
       ))}
-    </ul>
+    </List>
   );
 };
 
